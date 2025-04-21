@@ -296,7 +296,7 @@ function generateFieldDocumentation(structure) {
                 margin-left: 8px;
               ">Campo</span>
             </div>
-            <div style="color: #444; font-size: 0.9em; line-height: 1.4;">
+            <div style="color: #444; font-size: 0.8em; line-height: 1.4;">
               <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px;">
                 <span style="
                   background-color: #f8f9fa; 
@@ -330,16 +330,16 @@ function generateFieldDocumentation(structure) {
                   <span>${element.required}</span>
                 </span>` : ''}
               </div>
-              ${element.description ? `
-              <div style="
-                margin-top: 8px; 
-                padding: 8px; 
-                background-color: #f5f5f5; 
-                border-radius: 4px; 
-                font-style: italic;
-              ">
-                <span style="color: #757575;">Descripción:</span> ${element.description}
-              </div>` : ''}
+                  ${element.values.trim().toLowerCase() !== 'valor' ? `
+                  <div style="
+                    margin-top: 15px; 
+                    padding: 8px; 
+                    background-color: #f5f5f5; 
+                    border-radius: 4px; 
+                    font-style: italic;
+                  ">
+                    <span style="color: #757575;"></span> ${element.values.replace(/\s*\n\s*/g, '<br>')}
+                  </div>` : ''}
             </div>
           </div>
         `;
@@ -402,7 +402,7 @@ function generateFieldDocumentation(structure) {
                 border-radius: 4px; 
                 font-style: italic;
               ">
-                <span style="color: #757575;">Descripción:</span> ${element.description}
+                <span style="color: #757575;"></span> ${element.description}
               </div>` : ''}
             </div>
             
@@ -1180,7 +1180,7 @@ function displayMessageStructure(message, serviceStructure) {
             const description = parts.slice(1).join('=').trim();
             
             formattedValues += `
-              <div class="value-item">
+              <div class="value-item" style="margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
                 <div class="value-code">${code}</div>
                 <div class="value-description">${description}</div>
               </div>`;
@@ -1188,7 +1188,7 @@ function displayMessageStructure(message, serviceStructure) {
         } else {
           // Si no tiene '=', es un valor simple
           formattedValues += `
-              <div class="value-item">
+              <div class="value-item" style="margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
                 <div class="value-code">${trimmedLine}</div>
               </div>`;
         }
@@ -1202,15 +1202,17 @@ function displayMessageStructure(message, serviceStructure) {
         if (!trimmedVal) continue;
         
         formattedValues += `
-            <div class="value-item">
+            <div class="value-item" style="margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
               <div class="value-code">${trimmedVal}</div>
             </div>`;
       }
     } else {
-      // Texto simple, mostrarlo tal cual
-      formattedValues = `
-          <div class="value-item full-width">
-            <div class="value-description">${field.values}</div>
+      // Texto simple, mostrarlo con saltos de línea
+      // Reemplazar saltos de línea implícitos con saltos de línea explícitos
+      const formattedText = field.values.replace(/\s*\n\s*/g, '<br><br>');
+      
+      formattedValues = `<div class="value-item full-width" style="margin-bottom: 12px; white-space: pre-wrap;">
+            <div class="value-description">${formattedText}</div>
           </div>`;
     }
     
@@ -1449,7 +1451,7 @@ function displayMessageStructure(message, serviceStructure) {
               generateFieldDocumentation(window.headerStructure) +
               // Sección colapsable para los valores posibles
               (headerValuesDoc !== '<div class="no-values-message">No hay campos con valores posibles definidos.</div>' ? 
-              '<div class="values-section" style="margin-top: 15px;">' +
+              '<div class="values-section" style="margin-top: 15px;display:none">' +
                 '<div class="values-section-header" style="cursor: pointer; background-color: #e3f2fd; padding: 8px 12px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;" onclick="this.parentNode.querySelector(\'.values-section-content\').style.display = this.parentNode.querySelector(\'.values-section-content\').style.display === \'none\' ? \'block\' : \'none\'; this.querySelector(\'.collapse-indicator\').textContent = this.querySelector(\'.collapse-indicator\').textContent === \'▼\' ? \'▶\' : \'▼\';">' +
                   '<span style="font-weight: bold; color: #2196f3;">Valores Posibles</span>' +
                   '<span class="collapse-indicator" style="font-size: 12px;">▼</span>' +
@@ -1485,7 +1487,7 @@ function displayMessageStructure(message, serviceStructure) {
               generateFieldDocumentation(serviceStructure.request) +
               // Sección colapsable para los valores posibles
               (requestValuesDoc !== '<div class="no-values-message">No hay campos con valores posibles definidos.</div>' ? 
-              '<div class="values-section" style="margin-top: 15px;">' +
+              '<div class="values-section" style="margin-top: 15px;display:none">' +
                 '<div class="values-section-header" style="cursor: pointer; background-color: #e3f2fd; padding: 8px 12px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;" onclick="this.parentNode.querySelector(\'.values-section-content\').style.display = this.parentNode.querySelector(\'.values-section-content\').style.display === \'none\' ? \'block\' : \'none\'; this.querySelector(\'.collapse-indicator\').textContent = this.querySelector(\'.collapse-indicator\').textContent === \'▼\' ? \'▶\' : \'▼\';">' +
                   '<span style="font-weight: bold; color: #2196f3;">Valores Posibles</span>' +
                   '<span class="collapse-indicator" style="font-size: 12px;">▼</span>' +
@@ -1521,8 +1523,8 @@ function displayMessageStructure(message, serviceStructure) {
               generateFieldDocumentation(serviceStructure.response) +
               // Sección colapsable para los valores posibles
               (responseValuesDoc !== '<div class="no-values-message">No hay campos con valores posibles definidos.</div>' ? 
-              '<div class="values-section" style="margin-top: 15px;">' +
-                '<div class="values-section-header" style="cursor: pointer; background-color: #e3f2fd; padding: 8px 12px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;" onclick="this.parentNode.querySelector(\'.values-section-content\').style.display = this.parentNode.querySelector(\'.values-section-content\').style.display === \'none\' ? \'block\' : \'none\'; this.querySelector(\'.collapse-indicator\').textContent = this.querySelector(\'.collapse-indicator\').textContent === \'▼\' ? \'▶\' : \'▼\';">' +
+              '<div class="values-section" style="margin-top: 15px;display:none">' +
+                '<div class="values-section-header" style="display:none; cursor: pointer; background-color: #e3f2fd; padding: 8px 12px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;" onclick="this.parentNode.querySelector(\'.values-section-content\').style.display = this.parentNode.querySelector(\'.values-section-content\').style.display === \'none\' ? \'block\' : \'none\'; this.querySelector(\'.collapse-indicator\').textContent = this.querySelector(\'.collapse-indicator\').textContent === \'▼\' ? \'▶\' : \'▼\';">' +
                   '<span style="font-weight: bold; color: #2196f3;">Valores Posibles</span>' +
                   '<span class="collapse-indicator" style="font-size: 12px;">▼</span>' +
                 '</div>' +
@@ -1771,7 +1773,7 @@ function displayMessageStructure(message, serviceStructure) {
                     margin-left: 8px;
                   ">Campo</span>
                 </div>
-                <div style="color: #444; font-size: 0.9em; line-height: 1.4;">
+                <div style="color: #444; font-size: 0.8em; line-height: 1.4;">
                   <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 5px;">
                     <span style="
                       background-color: #f8f9fa; 
@@ -1813,7 +1815,8 @@ function displayMessageStructure(message, serviceStructure) {
                     border-radius: 4px; 
                     font-style: italic;
                   ">
-                    <span style="color: #757575;">Descripción:</span> ${element.description}
+
+                    <span style="color: #757575;"></span> ${element.description}
                   </div>` : ''}
                 </div>
               </div>
@@ -1869,7 +1872,9 @@ function displayMessageStructure(message, serviceStructure) {
                       <span>${element.count || 1}</span>
                     </span>
                   </div>
+
                   ${element.description ? `
+
                   <div style="
                     margin-top: 8px; 
                     padding: 8px; 
@@ -1877,7 +1882,7 @@ function displayMessageStructure(message, serviceStructure) {
                     border-radius: 4px; 
                     font-style: italic;
                   ">
-                    <span style="color: #757575;">Descripción:</span> ${element.description}
+                    <span style="color: #757575;"></span> ${element.description}
                   </div>` : ''}
                 </div>
                 

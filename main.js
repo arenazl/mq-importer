@@ -31,113 +31,13 @@ async function procesarArchivos() {
       }
       const fileBuffer = await serviceInput.files[0].arrayBuffer();
       
-      // Definir la estructura de cabecera directamente en el código
-      const headerStructure = {
-        "totalLength": 102,
-        "fields": [
-          {
-            "name": "LONGITUD DEL MENSAJE",
-            "length": 6,
-            "type": "NUMERICO",
-            "required": "OBLIGATORIO",
-            "values": "",
-            "description": "Longitud total del mensaje"
-          },
-          {
-            "name": "CANAL",
-            "length": 2,
-            "type": "ALFANUMERICO",
-            "required": "OBLIGATORIO",
-            "values": "",
-            "description": "Canal por el que se realiza la transacción"
-          },
-          {
-            "name": "SERVICIO",
-            "length": 4,
-            "type": "NUMERICO",
-            "required": "OBLIGATORIO",
-            "values": "0000 Transaccion exitosa\n8001 Error validacion de datos\n8992 CANAL/SERVICIO NO HABILITADO\n8991 ERROR Validacion Header mensaje\n8993 SERVICIO NO HABILITADO POR CANAL\n8001 ERROR PARRAFO DE VALIDACION GENERAL\n9099+ COD RET <> 0 DEL MODULO KYOSC3090\n0000 COSRTE <> 0 DEL MODULO KYOSC3090\n9001 POSICION DEUDORA NO PERMITIDA\n9002 CUENTA INEXISTENTE MODULO 6000\n9003 IMPUTACION RECHAZADA POR CUENTA BLOQUEA\n9004 IMPUTACION RECHAZADA POR MOVIMIENTO ORIG APLICADO\n9005 MODULO EDO4009 NUMERADOR TERMINA CON ERI\n9006 ERROR EN ACCESO A TABLA DB2 Y4Y9CT01\n9007 ERROR EN ACCESO A TABLA DB2 Y8S30PA0\n9000 COD RET <> 0 DEL MODULO KYOSC3090\n9099 (6001)- SUCURSAL NO OPERATIVA - FDO6001Y\n9099 (6001)- CUENTA CONTABLE NO VIGENTE - FDO6001Y\n9099 (6072)- CUENTA NO DISPONIBLE - FECHA DE FIN DE VIGENCIA MENOR O IGUAL A FECHA DE MOVIMIENTO - F\n9099 (6073)- SALDO CONTRANATURALEZA - FDO6001Y\n9099 (6074)- SALDO INSUFICIENTE - FDO6001Y\n9099 (6075)- FALTA TIT PARA IMPUTAR - FDO6001Y\n9099 (6076)- NRO MVTO NO ACORDE CON CTA - FDO6001Y\n9099 (6077)- FALTA CONCEPTO DEL APUNTE - FDO6001Y\n9099 (6079)- FALTAN INTERVINIENTES - FDO6001Y\n9099 (6080)- BANCO-SUCURSAL INEXISTENTE - FDO6001Y\n9099 (6097)- MONEDA NO COINCIDE CON CUENTA - FDO6\n9099 (6161)- FECHA CONTAB NO VALIDA - FDO6001Y\n9099 (6998)- OPERACION NO VALIDO - FDO6001Y",
-            "description": "Código que identifica el servicio"
-          },
-          {
-            "name": "CÓDIGO DE RETORNO",
-            "length": 4,
-            "type": "NUMERICO",
-            "required": "OBLIGATORIO",
-            "values": "",
-            "description": "Código que indica el resultado del procesamiento"
-          },
-          {
-            "name": "ID DEL MENSAJE",
-            "length": 9,
-            "type": "NUMERICO",
-            "required": "OBLIGATORIO",
-            "values": "",
-            "description": "Identificador único del mensaje"
-          },
-          {
-            "name": "FECHA",
-            "length": 8,
-            "type": "NUMERICO",
-            "required": "OBLIGATORIO",
-            "values": "",
-            "description": "Fecha en formato AAAAMMDD"
-          },
-          {
-            "name": "HORA",
-            "length": 6,
-            "type": "NUMERICO",
-            "required": "OBLIGATORIO",
-            "values": "",
-            "description": "Hora en formato HHMMSS"
-          },
-          {
-            "name": "USUARIO",
-            "length": 7,
-            "type": "ALFANUMERICO",
-            "required": "OBLIGATORIO",
-            "values": "",
-            "description": "Código que identifica al usuario"
-          },
-          {
-            "name": "Ubicación",
-            "length": 4,
-            "type": "NUMERICO",
-            "required": "OBLIGATORIO",
-            "values": "",
-            "description": "Código de ubicación"
-          },
-          {
-            "name": "TEXTO DEL CÓDIGO DE RETORNO",
-            "length": 45,
-            "type": "ALFANUMERICO",
-            "required": "OBLIGATORIO",
-            "values": "CÓDIGO DE RETORNO <> 0 texto del mensaje ESTADO ENVIADO <> 0 texto del mensaje",
-            "description": "Texto descriptivo del código de retorno"
-          },
-          {
-            "name": "ESTADO ENVIADO",
-            "length": 2,
-            "type": "NUMERICO",
-            "required": "OBLIGATORIO",
-            "values": "",
-            "description": "Estado del mensaje enviado"
-          },
-          {
-            "name": "CAMPO COMPLEMENTARIO",
-            "length": 5,
-            "type": "ALFANUMERICO",
-            "required": "OBLIGATORIO",
-            "values": "",
-            "description": "Campo complementario"
-          }
-        ]
-      };
+      // Obtener estructura de cabecera desde el Excel
+      const headerStructure = parseHeaderStructure(fileBuffer);
       
       // Hacer la estructura de cabecera disponible globalmente para displayMessageStructure
       window.headerStructure = headerStructure;
       
-      console.log('Estructura de cabecera cargada correctamente:', headerStructure);
+      console.log('Estructura de cabecera cargada dinámicamente desde Excel:', headerStructure);
       
       // Obtener estructura del servicio
       const serviceStructure = parseServiceStructure(fileBuffer);

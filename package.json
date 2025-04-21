@@ -1,0 +1,21 @@
+{
+  "name": "mq-importer",
+  "version": "1.0.0",
+  "description": "Importador y procesador de mensajes MQ",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve",
+    "deploy": "echo 'Listo para desplegar en Netlify'"
+  },
+  "keywords": [
+    "mq",
+    "importer",
+    "json",
+    "excel"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.1"
+  }
+}
