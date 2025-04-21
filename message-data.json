@@ -1,0 +1,18 @@
+{
+  "header": {
+    "LONGITUD DEL MENSAJE": "000643",
+    "CANAL": "OT",
+    "SERVICIO": "3050",
+    "CÓDIGO DE RETORNO": "0000",
+    "ID DEL MENSAJE": "000000761",
+    "FECHA": "18092012",
+    "HORA": "114044",
+    "USUARIO": "PASCUAL",
+    "Ubicación": "1047",
+    "TEXTO DEL CÓDIGO DE RETORNO": "                                             ",
+    "ESTADO ENVIADO": "00",
+    "CAMPO COMPLEMENTARIO": ""
+  },
+  "data": {},
+  "section": "request"
+}

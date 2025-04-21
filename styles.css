@@ -1,0 +1,839 @@
+:root {
+  --primary-color: #3f51b5;
+  --secondary-color: #ff4081;
+  --background-color: #f5f5f5;
+  --text-primary: #333;
+  --text-secondary: #666;
+  --surface-color: #ffffff;
+  --border-color: #e0e0e0;
+  
+  /* Colores para los diferentes niveles */
+  --level-0-color: hwb(217 21% 61%);
+  --level-0-bg: rgba(52, 152, 219, 0.05);
+  --level-0-border: hwb(217 21% 61%);
+  
+  --level-1-color: #009688;
+  --level-1-bg: rgba(231, 76, 60, 0.05);
+  --level-1-border: #009688;
+  
+  --level-2-color: #27ae60;
+  --level-2-bg: rgba(39, 174, 96, 0.05);
+  --level-2-border: #27ae60;
+  
+  --level-3-color: #f39c12;
+  --level-3-bg: rgba(243, 156, 18, 0.05);
+  --level-3-border: #f39c12;
+  
+  --header-color: #8e44ad;
+  --header-bg: rgba(142, 68, 173, 0.05);
+  --header-border: #8e44ad;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-primary);
+  line-height: 1;
+  padding: 10px;
+}
+
+.container {
+  width: 100%;
+  max-width: 95%;
+  background-color: var(--surface-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  padding: 20px;
+}
+
+.header {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 10px;
+  text-align: center;
+  margin-bottom: 15px;
+  border-radius: 4px;
+}
+
+.header h1 {
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+.file-upload {
+  border: 2px dashed var(--primary-color);
+  border-radius: 6px;
+  padding: 15px;
+  text-align: center;
+  transition: background-color 0.3s ease;
+  margin-bottom: 15px;
+}
+
+.file-input-label {
+  display: inline-block;
+  background-color: var(--primary-color);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+#serviceInput {
+  display: none;
+}
+
+.file-name {
+  margin-top: 8px;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+#output {
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 15px;
+  overflow-y: visible;
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.section {
+  margin-bottom: 12px;
+  padding: 10px;
+  background-color: #ecf0f1;
+  border-radius: 4px;
+  border-left: 4px solid var(--primary-color);
+}
+
+.header-section {
+  border-left: 4px solid var(--header-color);
+  background-color: var(--header-bg);
+}
+
+.section-title {
+  margin: 0 0 8px 0;
+  font-weight: bold;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+/* Estilos para los campos - optimizados para mostrar en una sola línea */
+.field {
+  padding: 5px 8px;
+  margin-bottom: 3px;
+  background-color: #fff;
+  border-radius: 3px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  font-family: monospace;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  white-space: normal;
+  overflow-x: visible;
+  overflow-y: visible;
+}
+
+/* Estilos para tipos específicos de campos */
+.header-field {
+  border-left: 2px solid var(--header-color);
+}
+
+.common-field {
+  border-left: 2px solid var(--level-0-color);
+}
+
+.occurrence-field {
+  border-left: 2px solid var(--level-1-color);
+}
+
+/* Estilo para campos de solo lectura en la sección de respuesta */
+.readonly-field {
+  border-left: 2px solid #3498db;
+  background-color: #f8f9fa;
+}
+
+.readonly-field .field-value {
+  font-weight: bold;
+  background-color: rgba(52, 152, 219, 0.1);
+}
+
+.field-position {
+  font-weight: bold;
+  color: #e74c3c;
+  flex: 0 0 auto;
+  min-width: 85px;
+}
+
+.field-index {
+  font-weight: bold;
+  color: #9b59b6;
+  flex: 0 0 auto;
+  min-width: 35px;
+  padding-right: 4px;
+}
+
+.field-name {
+  font-weight: bold;
+  color: #2980b9;
+  flex: 0 0 auto;
+  max-width: none;
+  overflow: visible;
+  padding-right: 5px;
+}
+
+.field-value {
+  color: #27ae60;
+  flex: 0 0 auto;
+  margin-right: 5px;
+  max-width: none;
+  overflow: visible;
+  white-space: normal;
+  font-family: monospace;
+  background-color: rgba(39, 174, 96, 0.1);
+  padding: 2px 4px;
+  border-radius: 2px;
+}
+
+.field-meta {
+  color: #7f8c8d;
+  font-size: 0.85em;
+  flex: 1;
+  overflow: visible;
+  text-align: right;
+}
+
+/* Estilos para ocurrencias por nivel */
+.occurrence-section {
+  margin: 8px 0 8px 15px;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+/* Colores por nivel */
+.level-color-0 {
+  background-color: var(--level-0-bg);
+  border-left: 3px solid var(--level-0-border);
+}
+
+.level-color-1 {
+  background-color: var(--level-1-bg);
+  border-left: 3px solid var(--level-1-border);
+}
+
+.level-color-2 {
+  background-color: var(--level-2-bg);
+  border-left: 3px solid var(--level-2-border);
+}
+
+.level-color-3 {
+  background-color: var(--level-3-bg);
+  border-left: 3px solid var(--level-3-border);
+}
+
+.occurrence-title {
+  font-weight: bold;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+}
+
+/* Colores de título por nivel */
+.level-0 .occurrence-title {
+  color: var(--level-0-color);
+}
+
+.level-1 .occurrence-title {
+  color: var(--level-1-color);
+}
+
+.level-2 .occurrence-title {
+  color: var(--level-2-color);
+}
+
+.level-3 .occurrence-title {
+  color: var(--level-3-color);
+}
+
+.occurrence-fields {
+  margin-left: 10px;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+}
+
+/* Indentación por nivel */
+.level-0 {
+  margin-left: 20px;
+}
+
+.level-1 {
+  margin-left: 30px;
+}
+
+.level-2 {
+  margin-left: 30px;
+}
+
+.level-3 {
+  margin-left: 45px;
+}
+
+/* Estilos para campos de entrada y validación */
+.field-input-container {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+  margin-left: 10px;
+  flex: 1;
+}
+
+.field-input {
+  padding: 3px 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-family: monospace;
+  margin-right: 10px;
+  min-width: 100px;
+}
+
+.field-validation {
+  font-size: 0.8rem;
+  color: #666;
+  background-color: #f9f9f9;
+  padding: 2px 5px;
+  border-radius: 3px;
+  border-left: 2px solid #3498db;
+}
+
+
+.btn-add-occurrence {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 9px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+.btn-collapse-occurrence {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 2px 5px;
+    margin-right: 5px;
+    border-radius: 3px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-collapse-occurrence:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+
+.collapse-icon {
+    font-size: 12px;
+    transition: transform 0.2s ease;
+}
+
+.collapsed .collapse-icon {
+    transform: rotate(-90deg);
+}
+
+/* Estilos para JSON con colores */
+.json-key {
+    color: #2196f3; /* Azul para propiedades */
+    font-weight: bold;
+}
+
+.json-string {
+    color: #4caf50; /* Verde para strings */
+}
+
+.json-number {
+    color: #ff9800; /* Naranja para números */
+}
+
+.json-boolean {
+    color: #9c27b0; /* Violeta para booleanos */
+}
+
+.json-null {
+    color: #607d8b; /* Gris azulado para null */
+}
+
+/* Añadido para colorear comillas en JSON */
+pre span.json-key span, 
+pre span.json-string span {
+    color: #e91e63; /* Rosa para comillas */
+}
+
+/* Mejora de la visualización del JSON */
+.json-container {
+    background-color: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 15px;
+    margin: 10px 0;
+}
+
+.json-content-wrapper {
+    line-height: 1.5;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 12px;
+}
+
+/* Asegurar que los colores sean visibles en el tema actual */
+#json pre {
+    background-color: #fafafa;
+    color: #333;
+}
+
+.json-collapsible {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+}
+
+.json-collapsible::before {
+    content: '▼';
+    display: inline-block;
+    margin-right: 5px;
+    transition: transform 0.2s ease;
+}
+
+.json-collapsed::before {
+    transform: rotate(-90deg);
+}
+
+.json-content {
+    display: block;
+}
+
+.json-collapsed .json-content {
+    display: none;
+}
+
+/* Estilos para los diferentes tipos de valores JSON */
+.json-object, .json-array {
+    color: #000000;
+    font-weight: bold;
+}
+
+.json-key {
+    color: #0033b3;
+    font-weight: bold;
+}
+
+.json-string {
+    color: #008000;
+}
+
+.json-number {
+    color: #0000ff;
+}
+
+.json-boolean {
+    color: #b22222;
+}
+
+.json-null {
+    color: #808080;
+}
+
+.json-error {
+    color: #ff0000;
+    font-weight: bold;
+}
+
+
+.btn-remove-occurrence {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 2px 6px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  margin-left: 10px;
+}
+
+.occurrence-header {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px;
+  background-color: rgba(0,0,0,0.03);
+  border-radius: 3px;
+}
+
+.occurrence-item {
+  padding: 8px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  background-color: white;
+}
+
+.occurrences-container {
+  max-height: none;
+  overflow-y: visible;
+  padding: 5px;
+  margin-bottom: 8px;
+}
+
+/* Estilos adicionales para los dropdowns */
+.dropdown-input-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 5px;
+  width: 100%;
+}
+
+.field-dropdown {
+  padding: 5px;
+  margin-bottom: 5px;
+  border: 1px solid #3498db;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+  font-size: 0.9rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.field-dropdown option {
+  padding: 5px;
+}
+
+/* Estilos para el filtro de dropdown */
+.dropdown-filter-container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 5px;
+}
+
+.dropdown-filter {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #3498db;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin-bottom: 3px;
+}
+
+.dropdown-filter::placeholder {
+  color: #95a5a6;
+  font-style: italic;
+}
+
+/* Estilos para el contenedor personalizado de dropdown */
+.custom-select-container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+.custom-select-selected {
+  background-color: #f8f9fa;
+  padding: 8px 10px;
+  border: 1px solid #3498db;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.custom-select-selected:after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #3498db;
+}
+
+.custom-select-items {
+  position: absolute;
+  background-color: white;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  max-height: none;
+  overflow-y: visible;
+  border: 1px solid #ddd;
+  border-radius: 0 0 4px 4px;
+  display: none;
+}
+
+.custom-select-items div {
+  padding: 8px 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.custom-select-items div:hover {
+  background-color: #f1f1f1;
+}
+
+.select-selected.select-arrow-active:after {
+  border-top: 0;
+  border-bottom: 5px solid #3498db;
+}
+
+.select-hide {
+  display: none;
+}
+
+/* Tabs Styles */
+.tabs-container {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.tabs-nav {
+  display: flex;
+  border-bottom: 2px solid var(--primary-color);
+  margin-bottom: 15px;
+}
+
+.tab-btn {
+  padding: 10px 20px;
+  background-color: #f5f5f5;
+  border: none;
+  border-radius: 5px 5px 0 0;
+  cursor: pointer;
+  font-weight: 500;
+  margin-right: 5px;
+  transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.tab-btn.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.tab-content {
+  background-color: white;
+  border-radius: 0 0 5px 5px;
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+/* JSON Tab Styles */
+.json-display {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 15px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+/* Payload JSON Editor Styles */
+#jsonRequestEditor, #jsonResponseEditor {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  counter-reset: line;
+  padding: 10px;
+  line-height: 1.5;
+}
+
+/* JSON syntax highlighting colors */
+.json-property {
+  color: #2196f3; /* Blue for properties/keys */
+  font-weight: bold;
+}
+
+.json-string {
+  color: #4caf50; /* Green for string values */
+}
+
+.json-number {
+  color: #ff9800; /* Orange for numeric values */
+}
+
+.json-boolean {
+  color: #9c27b0; /* Purple for boolean values */
+}
+
+.json-null {
+  color: #607d8b; /* Gray for null values */
+}
+
+.json-quote {
+  color: #e91e63; /* Pink for quotes */
+}
+
+/* Payload sub-tabs navigation */
+.payload-tabs-nav {
+  display: flex;
+  border-bottom: 2px solid #3f51b5;
+  margin-bottom: 15px;
+}
+
+.payload-tab-btn {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px 5px 0 0;
+  cursor: pointer;
+  font-weight: 500;
+  margin-right: 5px;
+  transition: all 0.3s ease;
+}
+
+.payload-tab-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.payload-tab-btn.active {
+  background-color: #3f51b5;
+  color: white;
+}
+
+.payload-tab-content {
+  background-color: white;
+  border-radius: 0 0 5px 5px;
+  padding: 15px;
+}
+
+.payload-tab-pane {
+  display: none;
+}
+
+.payload-tab-pane.active {
+  display: block;
+}
+
+/* Button styles for JSON actions */
+.btn-primary, .btn-secondary {
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-primary {
+  background-color: #3498db;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #2980b9;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+/* Documentation panel styles */
+.field-documentation {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 0.9em;
+}
+
+.field-doc-item {
+  margin-bottom: 15px;
+  padding: 12px 15px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  border-left: 4px solid #2196f3;
+  transition: all 0.3s ease;
+}
+
+.field-doc-item:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .field {
+    flex-wrap: wrap;
+    white-space: normal;
+  }
+  .field-meta {
+    width: 100%;
+    flex: 1 0 100%;
+    text-align: left;
+    margin-top: 3px;
+  }
+  .container {
+    max-width: 100%;
+    padding: 10px;
+  }
+  .field-position, .field-index, .field-name, .field-value {
+    min-width: auto;
+  }
+  .field-input-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .field-input {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+  .field-validation {
+    width: 100%;
+  }
+  
+  /* Estilos para el contenedor de campo con dropdown */
+  .field-input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+}
+
+@media (min-width: 768px) {
+  .field-input-container {
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .field-validation {
+    margin-left: 10px;
+  }
+}

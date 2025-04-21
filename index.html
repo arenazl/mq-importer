@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Procesador de Mensajes Excel</title>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Excel Processing Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+  
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Procesador de Mensajes Excel</h1>
+    </div>
+
+    <div class="file-upload">
+      <label for="serviceInput" class="file-input-label">
+        Seleccionar Archivo Excel
+      </label>
+      <input type="file" id="serviceInput" name="serviceInput" accept=".xlsx,.xls">
+      <div class="file-name" id="fileName">Ningún archivo seleccionado</div>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="tabs-container">
+      <div class="tabs-nav">
+        <button class="tab-btn active" data-tab="cabecera">Cabecera</button>
+        <button class="tab-btn" data-tab="requerimiento">Requerimiento</button>
+        <button class="tab-btn" data-tab="respuesta">Respuesta</button>
+        <button class="tab-btn" data-tab="json">Estructura</button>
+        <button class="tab-btn" data-tab="payload">Payload</button>
+      </div>
+      
+      <!-- Tab Content -->
+      <div class="tab-content">
+        <div id="cabecera" class="tab-pane active">
+          <!-- Cabecera content will be inserted here -->
+        </div>
+        <div id="requerimiento" class="tab-pane">
+          <!-- Requerimiento content will be inserted here -->
+        </div>
+        <div id="respuesta" class="tab-pane">
+          <!-- Respuesta content will be inserted here -->
+        </div>
+        <div id="json" class="tab-pane">
+          <!-- JSON content will be inserted here -->
+        </div>
+        <div id="payload" class="tab-pane">
+          <!-- Payload content will be inserted here -->
+        </div>
+      </div>
+    </div>
+
+    <pre id="output" style="display: none;">Seleccione un archivo Excel (.xlsx o .xls) para procesar.</pre>
+  </div>
+
+  <!-- Utilidades -->
+  <script src="utils.js"></script>
+  
+  <!-- Parseo de estructura -->
+  <script src="structure-parser.js"></script>
+  
+  <!-- Creación de mensajes -->
+  <script src="message-creator.js"></script>
+  
+  <!-- Análisis de mensajes -->
+  <script src="message-analyzer.js"></script>
+  
+  <!-- Funciones de exportación -->
+  <script src="export-functions.js"></script>
+  
+  <!-- Formateo de fechas y manejo de ocurrencias -->
+  <script src="date-formatter.js"></script>
+  
+  <!-- Script principal -->
+  <script src="main.js"></script>
+  
+  <!-- Script de inicialización -->
+  <script src="init.js"></script>
+</body>
+</html>
