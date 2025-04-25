@@ -1,0 +1,159 @@
+{
+  "serviceNumber": "3050",
+  "serviceName": "Servicio de Ejemplo",
+  "request": {
+    "totalLength": 50,
+    "elements": [
+      {
+        "type": "field",
+        "index": 0,
+        "name": "SVC3050-CAMPO1",
+        "length": 10,
+        "fieldType": "ALFANUMERICO",
+        "required": "OBLIGATORIO",
+        "values": "",
+        "description": "Campo de ejemplo 1"
+      },
+      {
+        "type": "field",
+        "index": 1,
+        "name": "SVC3050-CAMPO2",
+        "length": 5,
+        "fieldType": "NUMERICO",
+        "required": "OBLIGATORIO",
+        "values": "",
+        "description": "Campo de ejemplo 2"
+      },
+      {
+        "type": "field",
+        "index": 2,
+        "name": "SVC3050-CANT-OCURR",
+        "length": 2,
+        "fieldType": "NUMERICO",
+        "required": "OBLIGATORIO",
+        "values": "",
+        "description": "Cantidad de ocurrencias"
+      },
+      {
+        "type": "occurrence",
+        "index": 3,
+        "count": 5,
+        "countFieldLength": 2,
+        "fields": [
+          {
+            "type": "field",
+            "name": "SVC3050-OCC-CAMPO1",
+            "length": 5,
+            "fieldType": "ALFANUMERICO",
+            "required": "OBLIGATORIO",
+            "values": "",
+            "description": "Campo 1 de ocurrencia"
+          },
+          {
+            "type": "field",
+            "name": "SVC3050-OCC-CAMPO2",
+            "length": 3,
+            "fieldType": "NUMERICO",
+            "required": "OBLIGATORIO",
+            "values": "",
+            "description": "Campo 2 de ocurrencia"
+          }
+        ]
+      },
+      {
+        "type": "field",
+        "index": 4,
+        "name": "SVC3050-CAMPO3",
+        "length": 15,
+        "fieldType": "ALFANUMERICO",
+        "required": "OPCIONAL",
+        "values": "",
+        "description": "Campo de ejemplo 3"
+      }
+    ],
+    "fieldCount": 3,
+    "occurrenceCount": 1
+  },
+  "response": {
+    "totalLength": 60,
+    "elements": [
+      {
+        "type": "field",
+        "index": 0,
+        "name": "SVC3050-RESP-CAMPO1",
+        "length": 10,
+        "fieldType": "ALFANUMERICO",
+        "required": "OBLIGATORIO",
+        "values": "",
+        "description": "Campo de respuesta 1"
+      },
+      {
+        "type": "field",
+        "index": 1,
+        "name": "SVC3050-RESP-CAMPO2",
+        "length": 5,
+        "fieldType": "NUMERICO",
+        "required": "OBLIGATORIO",
+        "values": "",
+        "description": "Campo de respuesta 2"
+      },
+      {
+        "type": "field",
+        "index": 2,
+        "name": "SVC3050-RESP-CANT-OCURR",
+        "length": 2,
+        "fieldType": "NUMERICO",
+        "required": "OBLIGATORIO",
+        "values": "",
+        "description": "Cantidad de ocurrencias en respuesta"
+      },
+      {
+        "type": "occurrence",
+        "index": 3,
+        "count": 5,
+        "countFieldLength": 2,
+        "fields": [
+          {
+            "type": "field",
+            "name": "SVC3050-RESP-OCC-CAMPO1",
+            "length": 5,
+            "fieldType": "ALFANUMERICO",
+            "required": "OBLIGATORIO",
+            "values": "",
+            "description": "Campo 1 de ocurrencia en respuesta"
+          },
+          {
+            "type": "field",
+            "name": "SVC3050-RESP-OCC-CAMPO2",
+            "length": 3,
+            "fieldType": "NUMERICO",
+            "required": "OBLIGATORIO",
+            "values": "",
+            "description": "Campo 2 de ocurrencia en respuesta"
+          },
+          {
+            "type": "field",
+            "name": "SVC3050-RESP-OCC-CAMPO3",
+            "length": 5,
+            "fieldType": "ALFANUMERICO",
+            "required": "OBLIGATORIO",
+            "values": "",
+            "description": "Campo 3 de ocurrencia en respuesta"
+          }
+        ]
+      },
+      {
+        "type": "field",
+        "index": 4,
+        "name": "SVC3050-RESP-CAMPO3",
+        "length": 20,
+        "fieldType": "ALFANUMERICO",
+        "required": "OPCIONAL",
+        "values": "",
+        "description": "Campo de respuesta 3"
+      }
+    ],
+    "fieldCount": 3,
+    "occurrenceCount": 1
+  }
+}

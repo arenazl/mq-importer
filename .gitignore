@@ -6,13 +6,6 @@ yarn-error.log
 package-lock.json
 yarn.lock
 
-# Archivos de construcción/compilación
-/dist
-/build
-/out
-/.next
-/coverage
-
 # Archivos de entorno
 .env
 .env.local
@@ -20,34 +13,32 @@ yarn.lock
 .env.test.local
 .env.production.local
 
-# Archivos de sistema operativo
+# Archivos de sistema
 .DS_Store
 Thumbs.db
-ehthumbs.db
-Desktop.ini
 
-# Archivos de editores/IDEs
-/.idea
-/.vscode
-*.swp
-*.swo
-*~
-.project
-.settings/
-.classpath
+# Directorios de construcción
+/dist
+/build
+/out
 
-# Archivos de logs
+# Archivos de log
 logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Archivos de IDE y editores
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
+*.bak
+*.orig
+*~
+
 # Archivos temporales
 tmp/
 temp/
-.tmp
-.temp
-
-# Archivos específicos de este proyecto
-# Agrega aquí cualquier archivo o directorio específico que quieras ignorar

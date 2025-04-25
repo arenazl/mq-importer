@@ -29,9 +29,37 @@ async function procesarArchivos() {
         output.textContent = 'Error: Por favor seleccione un archivo Excel';
         return;
       }
-      const fileBuffer = await serviceInput.files[0].arrayBuffer();
+      const file = serviceInput.files[0]; // Get the file object
+      const fileBuffer = await file.arrayBuffer(); // Keep for local parsing
+
+      // --- Upload file to server ---
+      const formData = new FormData();
+      formData.append('file', file); // 'file' must match the key expected by the server route
+
+      try {
+        const response = await fetch('/excel/upload', { // Assuming the API is served from the same origin or proxied
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(`Server error: ${response.status} - ${errorData.error || 'Unknown error'}`);
+        }
+
+        const result = await response.json();
+        console.log('File uploaded successfully:', result);
+        // You could potentially use the returned filenames (result.header_structure_file, etc.) if needed
+
+      } catch (uploadError) {
+        console.error('Error uploading file:', uploadError);
+        output.textContent = `Error uploading file: ${uploadError.message}`;
+        // Decide if you want to stop processing or continue with local display
+        // return; // Uncomment to stop if upload fails
+      }
+      // --- End Upload ---
       
-      // Obtener estructura de cabecera desde el Excel
+      // Obtener estructura de cabecera desde el Excel (local parsing for immediate display)
       const headerStructure = parseHeaderStructure(fileBuffer);
       
       // Hacer la estructura de cabecera disponible globalmente para displayMessageStructure

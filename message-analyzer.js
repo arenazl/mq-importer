@@ -225,8 +225,10 @@ function reorganizeJsonStructure(structure) {
     
     // Luego, procesar los elementos con parentId
     result.elements.forEach(el => {
+      console.log(`Element: ${el.name}, id: ${el.id}, parentId: ${el.parentId}`); // ADDED LOGGING
       if (el.parentId && !processedElements.has(el)) {
         const parentId = el.parentId;
+        console.log(`  - Processing element with parentId: ${parentId}`); // ADDED LOGGING
         const parent = elementsById[parentId];
         
         if (parent) {
@@ -853,8 +855,13 @@ function displayMessageStructure(message, serviceStructure) {
     let currentPosition = 0;
 
     const indent = "  ".repeat(level);
+    
+    // Ordenar elementos por índice para mantener el orden correcto
+    const sortedElements = [...elements].sort((a, b) => {
+      return (a.index || 0) - (b.index || 0);
+    });
 
-    elements.forEach((element) => {
+    sortedElements.forEach((element) => {
       if (element.type === "field") {
         // Agregar información de la ocurrencia padre si existe
         if (parentId) {
@@ -906,60 +913,107 @@ function displayMessageStructure(message, serviceStructure) {
                  ' data-total-occurrences="' + element.totalOccurrences + '"' +
                  ' data-effective-occurrences="' + element.effectiveOccurrences + '">\n';
         
-        output += indent + '  <div class="occurrence-title">' +
+        const innerIndent1 = "  ".repeat(level + 1); // Indentación para título y contenedor
+        const innerIndent2 = "  ".repeat(level + 2); // Indentación para el ítem y su contenido
+        const innerIndent3 = "  ".repeat(level + 3); // Indentación para elementos dentro del ítem
+
+        output += innerIndent1 + '<div class="occurrence-title">' +
           '<button type="button" class="btn-collapse-occurrence" data-target="' + occurrenceId + '_container">' +
           '<span class="collapse-icon">▼</span></button> ' +
           'SECCIÓN DE OCURRENCIAS [' + occurrenceName + '] - Ocurrencias: ' + element.totalOccurrences +
           ' (Nivel: ' + level + ', ID: ' + occurrenceId + ')' +
-          (isRequest ? ' <button type="button" class="btn-add-occurrence" ' + 
-                  'data-occurrence-id="' + occurrenceId + '" ' + 
+          (isRequest ? ' <button type="button" class="btn-add-occurrence" ' +
+                  'data-occurrence-id="' + occurrenceId + '" ' +
                   'data-max-occurrences="' + element.totalOccurrences + '"' +
                   'data-occurrence-name="' + occurrenceName + '"' +
                   'data-level="' + level + '">Agregar Elemento</button>' : '') +
         '</div>\n';
-        
+
         // Contenedor para las ocurrencias dinámicas
-        output += indent + '  <div class="occurrences-container" id="' + occurrenceId + '_container">\n';
+        output += innerIndent1 + '<div class="occurrences-container" id="' + occurrenceId + '_container">\n';
+
+        // Comenzar el primer ítem de ocurrencia
+        output += innerIndent2 + '<div class="occurrence-item" data-occurrence-index="0" data-occurrence-name="' + occurrenceName + '" data-occurrence-id="' + occurrenceId + '">\n';
+        output += innerIndent3 + '<div class="occurrence-header">Ocurrencia #1 (de ' + element.totalOccurrences + ')</div>\n';
         
-        // Primera ocurrencia (la que ya existe)
-        output += indent + '    <div class="occurrence-item" data-occurrence-index="0" data-occurrence-name="' + occurrenceName + '" data-occurrence-id="' + occurrenceId + '">\n';
-        output += indent + '      <div class="occurrence-header">Ocurrencia #1 (de ' + element.totalOccurrences + ')</div>\n';
+        // Procesar el contenido de la ocurrencia (campos y ocurrencias anidadas)
+        let currentItemPosition = 0;
         
-        // Procesar los campos de la ocurrencia
-        if (element.fields && element.fields.length > 0) {
-          element.fields.forEach((field) => {
-            // Verificar si el campo es una ocurrencia anidada
+        // Primero, usar children si existen (para compatibilidad con reorganizeJsonStructure)
+        if (element.children && element.children.length > 0) {
+          const childrenOutput = renderHierarchicalStructure(
+            element.children,
+            level + 2,  // Nivel para elementos hijos (nivel actual + 2)
+            occurrenceId,
+            isRequest
+          );
+          
+          output += childrenOutput;
+        } 
+        // Si no hay children, procesar los campos normalmente
+        else if (element.fields && element.fields.length > 0) {
+          // Separar campos y ocurrencias para mantener el orden correcto
+          const nestedFields = [];
+          const nestedOccurrences = [];
+          
+          element.fields.forEach(field => {
             if (field.type === "occurrence") {
-              // Renderizar la ocurrencia anidada recursivamente
-              output += renderHierarchicalStructure(
-                [field],
-                level + 1,
-                occurrenceId,
-                isRequest
-              );
+              nestedOccurrences.push(field);
             } else {
-              // Clonar el campo para no modificar el original
-              const fieldWithOccurrence = { ...field };
-              // Agregar propiedades de la ocurrencia
-              fieldWithOccurrence.occurrenceId = occurrenceId;
-              fieldWithOccurrence.occurrenceName = occurrenceName;
-              fieldWithOccurrence.occurrenceLevel = level;
-              
-              if (!isRequest) {
-                // Para la sección de respuesta, mostrar campos de solo lectura
-                output += indent + '      ' + renderFieldReadOnly(fieldWithOccurrence, currentPosition) + '\n';
-              } else {
-                // Para la sección de requerimiento, mantener el comportamiento original
-                output += indent + '      ' + renderField(fieldWithOccurrence, currentPosition, 'occurrence') + '\n';
-              }
-              currentPosition += field.length;
+              nestedFields.push(field);
             }
+          });
+          
+          // Renderizar primero los campos regulares
+          nestedFields.forEach(field => {
+            const fieldWithOccurrence = { ...field };
+            fieldWithOccurrence.occurrenceId = occurrenceId;
+            fieldWithOccurrence.occurrenceName = element.occurrenceName || occurrenceName;
+            fieldWithOccurrence.occurrenceLevel = level + 2; // Nivel del campo
+            
+            let fieldHtml;
+            if (!isRequest) {
+              fieldHtml = renderFieldReadOnly(fieldWithOccurrence, currentItemPosition);
+            } else {
+              fieldHtml = renderField(fieldWithOccurrence, currentItemPosition, 'occurrence');
+            }
+            
+            output += innerIndent3 + fieldHtml + '\n';
+            currentItemPosition += field.length;
+          });
+          
+          // Luego renderizar las ocurrencias anidadas
+          nestedOccurrences.forEach(nestedOcc => {
+            // Configurar la ocurrencia anidada con el parentId correcto
+            nestedOcc.parentId = occurrenceId;
+            nestedOcc.level = level + 2; // Nivel para la ocurrencia anidada (nivel actual + 2)
+            
+            // Importante: asegurarse de que el ID sea reconocible y único
+            if (!nestedOcc.id || nestedOcc.id.indexOf(occurrenceId) === -1) {
+              nestedOcc.id = `${occurrenceId}_nested_${nestedOcc.index}`;
+            }
+            
+            console.log(`Procesando ocurrencia anidada: ${nestedOcc.id} (parentId: ${nestedOcc.parentId}), nivel: ${nestedOcc.level}`);
+            
+            // Renderizar recursivamente la ocurrencia anidada
+            const nestedOutput = renderHierarchicalStructure(
+              [nestedOcc], // Pasar como array para que funcione correctamente
+              level + 2,   // Nivel para la ocurrencia anidada
+              occurrenceId, // El ID de la ocurrencia padre
+              isRequest
+            );
+            
+            output += nestedOutput;
           });
         }
         
-        output += indent + '    </div>\n'; // Fin de la primera ocurrencia
-        output += indent + '  </div>\n'; // Fin del contenedor de ocurrencias
+        // Cerrar el primer ítem de ocurrencia
+        output += innerIndent2 + '</div>\n';
         
+        // Cerrar el contenedor de ocurrencias
+        output += innerIndent1 + '</div>\n';
+        
+        // Cerrar la sección de ocurrencia
         output += indent + '</div>\n';
       }
     });
@@ -1113,11 +1167,15 @@ function displayMessageStructure(message, serviceStructure) {
   
   // Generar contenido para cada pestaña
   const headerContent = renderHeaderSection();
+
+  // Reorganize request and response structures first to handle parentId/children for rendering
+  const reorganizedRequest = reorganizeJsonStructure(serviceStructure.request);
+  const reorganizedResponse = reorganizeJsonStructure(serviceStructure.response);
   
   const requestContent = '<div class="section">' +
     '<div class="section-title">REQUERIMIENTO (' + requestLength + ' posiciones' + 
     (requestLengthMatch ? ' ✓' : ' ✗ - Esperado: ' + expectedRequestLength) + ')</div>' +
-    renderHierarchicalStructure(serviceStructure.request.elements, 0, '', true) +
+    renderHierarchicalStructure(reorganizedRequest.elements, 0, '', true) + // Use reorganized elements
     
     '<!-- Botón para generar string de requerimiento -->' +
     '<div class="request-string-generator" style="margin-top: 20px; padding: 15px; background-color: #f0f8ff; border-radius: 5px; border: 1px solid #b8daff;">' +
@@ -1141,7 +1199,7 @@ function displayMessageStructure(message, serviceStructure) {
   const responseContent = '<div class="section">' +
     '<div class="section-title">RESPUESTA (' + responseLength + ' posiciones' + 
     (responseLengthMatch ? ' ✓' : ' ✗ - Esperado: ' + expectedResponseLength) + ')</div>' +
-    renderHierarchicalStructure(serviceStructure.response.elements, 0, '', false) +
+    renderHierarchicalStructure(reorganizedResponse.elements, 0, '', false) + // Use reorganized elements
     
     '<!-- Resumen de longitudes -->' +
     '<div class="length-summary" style="display:none; margin-top: 20px; padding: 15px; background-color: #f5f5f5; border-radius: 5px; border: 1px solid #ddd;">' +
@@ -1434,7 +1492,7 @@ function displayMessageStructure(message, serviceStructure) {
             '<div class="json-content-panel">' +
               '<div class="json-container" style="background-color: white; padding: 10px; border: 1px solid #ddd; border-radius: 4px; max-height: 500px; overflow: auto; font-family: monospace; position: relative;">' +
                 '<pre class="json-content-wrapper" style="margin: 0; color: #333;">' +
-                  colorizeJsonSyntax(JSON.stringify(reorganizeJsonStructure(window.headerStructure), null, 2)) +
+                  colorizeJsonSyntax(JSON.stringify(reorganizeJsonStructure(window.headerStructure), null, 2)) + // Keep header separate reorganization
                 '</pre>' +
               '</div>' +
               '<div style="margin-top: 10px;">' +
@@ -1470,7 +1528,7 @@ function displayMessageStructure(message, serviceStructure) {
             '<div class="json-content-panel">' +
               '<div class="json-container" style="background-color: white; padding: 10px; border: 1px solid #ddd; border-radius: 4px; max-height: 500px; overflow: auto; font-family: monospace; position: relative;">' +
                 '<pre class="json-content-wrapper" style="margin: 0; color: #333;">' +
-                  colorizeJsonSyntax(JSON.stringify(reorganizeJsonStructure(serviceStructure.request), null, 2)) +
+                  colorizeJsonSyntax(JSON.stringify(reorganizedRequest, null, 2)) + // Use already reorganized request
                 '</pre>' +
               '</div>' +
               '<div style="margin-top: 10px;">' +
@@ -1506,7 +1564,7 @@ function displayMessageStructure(message, serviceStructure) {
             '<div class="json-content-panel">' +
               '<div class="json-container" style="background-color: white; padding: 10px; border: 1px solid #ddd; border-radius: 4px; max-height: 500px; overflow: auto; font-family: monospace; position: relative;">' +
                 '<pre class="json-content-wrapper" style="margin: 0; color: #333;">' +
-                  colorizeJsonSyntax(JSON.stringify(reorganizeJsonStructure(serviceStructure.response), null, 2)) +
+                  colorizeJsonSyntax(JSON.stringify(reorganizedResponse, null, 2)) + // Use already reorganized response
                 '</pre>' +
               '</div>' +
               '<div style="margin-top: 10px;">' +
@@ -1998,8 +2056,8 @@ function displayMessageStructure(message, serviceStructure) {
     return payloadContent;
   }
   
-  // Generar contenido para la pestaña Payload
-  const payloadContent = generatePayloadContent(serviceStructure);
+  // Generar contenido para la pestaña Payload using the reorganized structures
+  const payloadContent = generatePayloadContent({ request: reorganizedRequest, response: reorganizedResponse });
   
   // Insertar el contenido en las pestañas correspondientes
   document.getElementById('cabecera').innerHTML = headerContent;
